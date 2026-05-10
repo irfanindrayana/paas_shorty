@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shorty - Pemendek URL</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .container { max-width: 600px; margin-top: 100px; }
+    </style>
+</head>
+<body>
+    <div class="container bg-white p-5 rounded shadow">
+        <h2 class="text-center mb-4">Pemendek URL</h2>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="/shorten" method="POST">
+            <div class="mb-3">
+                <label class="form-label">URL Panjang</label>
+                <input type="url" name="url" class="form-control" placeholder="https://contoh-link-sangat-panjang.com/..." required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Alias Kustom (Opsional)</label>
+                <input type="text" name="alias" class="form-control" placeholder="misal: link-saya">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Pendekkan Sekarang</button>
+        </form>
+
+        {% if short_url %}
+        <div class="mt-4 p-3 bg-light border rounded">
+            <p class="mb-1">URL Pendek Anda:</p>
+            <a href="{{ short_url }}" target="_blank" class="h5 text-break">{{ short_url }}</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mt-5">
+    <h4 class="mb-3">Daftar Shortlink</h4>
+    <div class="table-responsive">
+        <table class="table table-hover bg-white border">
+            <thead class="table-light">
+                <tr>
+                    <th>Alias</th>
+                    <th>URL Asli</th>
+                    <th>Klik</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in urls %}
+                <tr>
+                    <td><a href="/{{ item.short_slug }}" target="_blank">{{ item.short_slug }}</a></td>
+                    <td class="text-truncate" style="max-width: 200px;">{{ item.long_url }}</td>
+                    <td><span class="badge bg-secondary">{{ item.clicks }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
